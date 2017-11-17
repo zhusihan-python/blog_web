@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block navbar %}
+    <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+            <li><a href="{{ url_for('home', page = 1) }}">主页</a></li>
+        </ul>
+    </div>
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>欢迎来到Eigen Blog!</h1>
+    </div>
+    <ul class="fa-list-ul">
+        {% for post in posts.items %}
+            <div class="row">
+              <div class="col-lg-12">
+                <h1>{{ post.title }}</h1>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                {{ post.text | truncate(255) | safe }}
+                <!-- Set the link for read more -->
+              </div>
+            </div>
+    {% endfor %}
+    </ul>
+    <ul class="pagenum">
+        <li>
+        {% if posts.has_prev %}
+            <a href="{{ url_for('home', page = posts.prev_num) }}">上一页</a>
+        {% else %}
+            上一页
+        {% endif %}
+        </li>
+        {%- for page in posts.iter_pages() %}
+              <li>
+              {% if page %}
+                {% if page != posts.page %}
+                  <a href="{{ url_for('home', page=page) }}">{{ page }}</a>
+                {% else %}
+                  <span class="page-number current">{{ page }}</span>
+                {% endif %}
+              {% else %}
+                <span class=ellipsis>…</span>
+              {% endif %}
+              </li>
+        {%- endfor %}
+         <li>
+        {% if posts.has_next %}
+            <a href="{{ url_for('home', page = posts.next_num) }}">下一页 </a>
+        {% else %}
+            下一页
+        {% endif %}
+        </li>
+    </ul>
+</div>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul class=flashes>
+            {% for category, message in messages %}
+                <li>{{ category }}:{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+{% endblock %}
